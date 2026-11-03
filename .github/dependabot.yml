@@ -8,6 +8,11 @@ updates:
       time: "12:00"
       timezone: "America/New_York"
     open-pull-requests-limit: 100
+    ignore:
+      # goproxy 1.9.2 breaks the spoofed API/metadata host protections
+      # (TestProxyDependabotAPIHost, TestMetadataAPIRestriction).
+      - dependency-name: "github.com/elazarl/goproxy"
+        versions: ["1.9.2"]
 
   - package-ecosystem: "docker"
     directory: "/"
