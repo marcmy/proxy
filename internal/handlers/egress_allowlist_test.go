@@ -609,6 +609,7 @@ func TestEgressAllowlist_PublicRegistriesAllowed(t *testing.T) {
 		"https://go.googlesource.com/tools",
 		"https://android.googlesource.com/platform",
 		"https://nodejs.org/dist/index.json",
+		"https://rust-registry.proton.me/index/config.json",
 		"https://adsbynimbus-public.s3.amazonaws.com/android/sdks",
 	} {
 		assert.Nil(t, egressResult(t, h, allowed), "public registry host allowed: "+allowed)
@@ -682,6 +683,8 @@ func TestEgressAllowlist_ProdBlockedHostsNowAllowed(t *testing.T) {
 			"https://dl.fontawesome.com/releases/v6/fontawesome.zip",
 			"https://mirrors.cloud.tencent.com/gradle/gradle-8.0-bin.zip",
 			"https://satis.spatie.be/packages.json",
+			"https://mirror.mage-os.org/p2/magento/framework.json",
+			"https://shopware.github.io/conflicts/packages.json",
 			"https://download.swift.org/swift-5.9-release/toolchain.tar.gz",
 			"https://releases.bazel.build/7.0.0/release/bazel-7.0.0-linux-x86_64",
 		},
@@ -719,6 +722,7 @@ func TestEgressAllowlist_NewEntriesDoNotWidenBeyondExactHosts(t *testing.T) {
 	// moment its entry is changed to a leading-dot suffix, so this is the probe
 	// set that actually pins exact-host semantics.
 	childProbes := []string{
+		"https://evil.rust-registry.proton.me/payload",
 		"https://evil.docker.redpanda.com/payload",
 		"https://evil.appboy.github.io/payload",
 		"https://evil.juliaregistries.github.io/payload",
@@ -761,7 +765,10 @@ func TestEgressAllowlist_NewEntriesDoNotWidenBeyondExactHosts(t *testing.T) {
 		"https://evil.charts.wiz.io/payload",
 		"https://evil.wiz-sec.github.io/payload",
 		"https://evil.fluent.github.io/payload",
+		"https://evil.castai.github.io/payload",
 		"https://evil.adsbynimbus-public.s3.amazonaws.com/payload",
+		"https://evil.mirror.mage-os.org/payload",
+		"https://evil.shopware.github.io/payload",
 	}
 
 	// Sibling hosts: names sharing a parent with an added entry. These pin the
@@ -784,6 +791,7 @@ func TestEgressAllowlist_NewEntriesDoNotWidenBeyondExactHosts(t *testing.T) {
 		"https://attacker.releases.hashicorp.com/payload",
 		"https://attacker.releases.teleport.dev/payload",
 		"https://attacker.wiz.io/payload",
+		"https://attacker.mage-os.org/payload",
 		// Cloudsmith is multi-tenant with the tenant in the URL path, and the
 		// allowlist authorizes the hostname only. Neither the tenant subdomain
 		// form nor the shared download hosts may be globally allowed.
@@ -976,6 +984,7 @@ func TestEgressAllowlist_AddedMissingDomainsAllowed(t *testing.T) {
 		"https://charts.wiz.io/index.yaml",
 		"https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.2.0.tgz",
 		"https://fluent.github.io/helm-charts/index.yaml",
+		"https://castai.github.io/helm-charts/index.yaml",
 		"https://cocoapods.org/pods/AFNetworking",
 	} {
 		assert.Nil(t, egressResult(t, h, allowed), "added host should be allowed: "+allowed)
@@ -1074,6 +1083,8 @@ func TestEgressDefaults_RegistryRedirectDerivationsLoadedFromYAML(t *testing.T) 
 		registryRedirectHosts([]string{"pypi.fury.io"}))
 	assert.Equal(t, []string{"downloads.cdn.telerik.com"},
 		registryRedirectHosts([]string{"nuget.telerik.com"}))
+	assert.Equal(t, []string{"mgcdn-main2.azureedge.net"},
+		registryRedirectHosts([]string{"www.myget.org"}))
 }
 
 func TestValidateRegistryRedirectDerivations_RejectsUnmatchableEntries(t *testing.T) {

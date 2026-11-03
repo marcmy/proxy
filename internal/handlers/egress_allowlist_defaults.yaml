@@ -192,6 +192,10 @@ registry_redirect_derivations:
   - credential_host: nuget.telerik.com
     derived:
       - downloads.cdn.telerik.com
+  # MyGet feeds redirect package downloads to their CDN
+  - credential_host: .myget.org
+    derived:
+      - mgcdn-main2.azureedge.net
 
 # ecosystem_default_domains lists the public registry and CDN hosts each
 # Dependabot ecosystem needs. The map is kept keyed by ecosystem for provenance
@@ -378,6 +382,8 @@ ecosystem_default_domains:
     - static.crates.io
     - index.crates.io
     - rsproxy.cn
+    # Proton AG's public sparse Cargo registry (pvpnclient, muon).
+    - rust-registry.proton.me
   composer:
     - repo.packagist.org
     - packagist.org
@@ -387,9 +393,13 @@ ecosystem_default_domains:
     - asset-packagist.org
     - cdn.asset-packagist.org
     - satis.spatie.be
-    # Composer repository published via GitHub Pages. Exact only:
+    # Mage-OS public mirror of the Magento Open Source packages.
+    - mirror.mage-os.org
+    # Composer repositories published via GitHub Pages. Exact only:
     # github.io subdomains are user-creatable.
     - wp-languages.github.io
+    # Shopware's shopware/conflicts metapackage, required by shopware/core.
+    - shopware.github.io
   go_modules:
     - proxy.golang.org
     - sum.golang.org
@@ -659,6 +669,8 @@ ecosystem_default_domains:
     - wiz-sec.github.io
     # Fluent's chart repo (GitHub Pages); tarballs are on github.com.
     - fluent.github.io
+    # CAST AI's chart repo (GitHub Pages); tarballs are on github.com.
+    - castai.github.io
   # GitHub-hosted or per-job configured; covered by github_infra_domains / git.
   # Note: additional per-job dependencies (e.g. pre_commit hooks that install
   # from other ecosystems) are covered because the handler applies the union of
